@@ -17,6 +17,7 @@ Linsey Pang · Ravid Shwartz-Ziv · Prakhar Mehrotra · Yann LeCun · Yuefan Den
 </p>
 
 <p align="center">
+  <a href="https://github.com/ru1ch3n/SCOPE"><strong>ru1ch3n/SCOPE</strong></a> &nbsp; / &nbsp;
   <a href="https://ru1ch3n.github.io/SCOPE/"><strong>Project page</strong></a> &nbsp; / &nbsp;
   <a href="#quick-start">Quick start</a> &nbsp; / &nbsp;
   <a href="docs/PROTOCOL.md">Protocol</a> &nbsp; / &nbsp;

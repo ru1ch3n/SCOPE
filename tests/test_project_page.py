@@ -60,3 +60,16 @@ def test_site_quickstart_controls_and_scientific_files_are_separate():
     assert (ROOT / "docs/.nojekyll").is_file()
     assert (ROOT / "docs/PROBES.md").is_file()
     assert (ROOT / "docs/MODELS.md").is_file()
+
+
+def test_user_confirmed_author_notes_and_repository_link():
+    page = (ROOT / "docs/index.html").read_text(encoding="utf-8")
+    assert "Linsey Pang<sup>4</sup>" in page
+    assert "Prakhar Mehrotra<sup>4</sup>" in page
+    assert "<sup>4</sup> PayPal" in page
+    assert "Jiaxing Zhang<sup>3</sup>" in page
+    assert "<sup>3</sup> Work done outside of company" in page
+    assert "TikTok" not in page
+    assert "Walmart Labs" not in page
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    assert 'href="https://github.com/ru1ch3n/SCOPE"' in readme
