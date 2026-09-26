@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="440" viewBox="0 0 1440 440" role="img" aria-labelledby="title desc">
+  <title id="title">SCOPE — sparse observations, full-field predictions</title>
+  <desc id="desc">SCOPE research project banner. Decorative points become connected contour lines; this is a design motif, not a model prediction.</desc>
+  <defs>
+    <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#102e36"/><stop offset="1" stop-color="#215c62"/></linearGradient>
+    <linearGradient id="line"><stop stop-color="#78c6b5" stop-opacity=".12"/><stop offset="1" stop-color="#9ae2ca" stop-opacity=".8"/></linearGradient>
+    <pattern id="dots" width="30" height="30" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.4" fill="#b2d9d0" opacity=".2"/></pattern>
+    <clipPath id="clip"><rect width="1440" height="440" rx="20"/></clipPath>
+  </defs>
+  <g clip-path="url(#clip)">
+    <rect width="1440" height="440" fill="url(#bg)"/>
+    <rect x="840" y="0" width="600" height="440" fill="url(#dots)"/>
+    <g fill="none" stroke="url(#line)" stroke-width="1.8">
+      <path d="M790 395 C990 350 905 60 1090 110 S1260 400 1490 240"/>
+      <path d="M780 370 C980 325 905 35 1090 85 S1280 370 1480 215"/>
+      <path d="M775 345 C975 300 910 10 1090 60 S1300 340 1470 190"/>
+      <path d="M780 320 C980 275 930 -15 1100 35 S1320 310 1460 165"/>
+      <path d="M800 420 C1000 375 910 85 1090 135 S1240 430 1500 265"/>
+      <path d="M810 445 C1010 400 915 110 1090 160 S1220 460 1510 290"/>
+      <path d="M840 470 C1030 425 920 135 1090 185 S1200 490 1520 315"/>
+      <path d="M790 295 C990 250 950 -40 1110 10 S1340 280 1450 140"/>
+      <path d="M800 270 C1000 225 970 -65 1120 -15 S1360 250 1440 115"/>
+    </g>
+    <g fill="#e5b888"><circle cx="936" cy="290" r="5"/><circle cx="1024" cy="131" r="5"/><circle cx="1119" cy="90" r="5"/><circle cx="1220" cy="265" r="5"/><circle cx="1339" cy="290" r="5"/></g>
+    <text x="70" y="66" fill="#91c9bc" font-family="Arial,sans-serif" font-size="15" letter-spacing="3">SCIENTIFIC MACHINE LEARNING / RESEARCH CODE</text>
+    <text x="64" y="205" fill="#f8faf6" font-family="Georgia,serif" font-size="128" letter-spacing="-6">SCOPE<tspan fill="#e7b27f">.</tspan></text>
+    <text x="70" y="270" fill="#f4f7f1" font-family="Georgia,serif" font-size="31">Sparse observations. Full-field predictions.</text>
+    <text x="70" y="311" fill="#b9d3cc" font-family="Arial,sans-serif" font-size="18">Observation-Conditioned Full-Target Prediction for Sparse PDE Inference</text>
+    <path d="M70 350 H735" stroke="#67948d" stroke-opacity=".45"/>
+    <text x="70" y="392" fill="#c6dfd7" font-family="Arial,sans-serif" font-size="16" letter-spacing="1">5 PDE SETTINGS   /   ONE-PASS INFERENCE   /   DECODER-ONLY ADAPTATION</text>
+  </g>
+</svg>

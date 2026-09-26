@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#173d43">
+  <meta name="description" content="SCOPE learns to recover complete paired physical fields from partial observations. Explore the method, decoder-only adaptation, reproducible training recipes and model release.">
+  <meta property="og:title" content="SCOPE | Sparse observations. Full-field predictions.">
+  <meta property="og:description" content="Observation-Conditioned Full-Target Prediction for Sparse PDE Inference. Research code, protocols and pretrained-model release information.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://ru1ch3n.github.io/SCOPE/">
+  <meta property="og:image" content="https://ru1ch3n.github.io/SCOPE/assets/architecture.png">
+  <title>SCOPE | Sparse observations. Full-field predictions.</title>
+  <link rel="canonical" href="https://ru1ch3n.github.io/SCOPE/">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="stylesheet" href="assets/site.css">
+  <script src="assets/site.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="topbar wrap">
+    <a class="wordmark" href="#" aria-label="SCOPE home">SCOPE<span>.</span></a>
+    <nav aria-label="Primary navigation"><a href="#method">Method</a><a href="#results">Evidence</a><a href="#start">Quick start</a><a class="nav-code" href="https://github.com/ru1ch3n/SCOPE">GitHub ↗</a></nav>
+  </header>
+  <main id="main">
+    <section class="hero wrap" aria-labelledby="title">
+      <p class="eyebrow"><span class="status-dot" aria-hidden="true"></span> Scientific machine learning · Public research code</p>
+      <h1 id="title">Sparse observations.<br><em>Full-field predictions.</em></h1>
+      <p class="paper-title"><strong>SCOPE:</strong> Observation-Conditioned Full-Target Prediction<br class="wide-only"> for Sparse PDE Inference</p>
+      <p class="standfirst">Learn the representation. Ground it in physical fields.<br class="wide-only"> Adapt the readout. Recover in one pass.</p>
+      <div class="actions">
+        <a class="button primary" href="https://github.com/ru1ch3n/SCOPE">Explore the code <span aria-hidden="true">↗</span></a>
+        <a class="button" href="#method">How it works <span aria-hidden="true">↓</span></a>
+        <a class="button" href="#resources">Data &amp; models <span aria-hidden="true">↓</span></a>
+      </div>
+      <div class="author-block">
+        <p class="authors">Ruichen Xu<sup>1</sup>, Siyao Wang<sup>2</sup>, Fang Wan<sup>1</sup>, Jiacheng Qiu<sup>1</sup>, Wenhan Gao<sup>1</sup>,<br class="wide-only"> Jiaxing Zhang<sup>3</sup>, Linsey Pang<sup>4</sup>, Ravid Shwartz-Ziv<sup>5</sup>, Prakhar Mehrotra<sup>6</sup>, Yann LeCun<sup>5</sup>, Yuefan Deng<sup>1</sup></p>
+        <p class="affiliations"><span><sup>1</sup> Stony Brook University</span><span><sup>2</sup> University of California, Davis</span><span><sup>3</sup> TikTok</span><span><sup>4</sup> PayPal</span><span><sup>5</sup> New York University</span><span><sup>6</sup> Walmart Labs</span></p>
+      </div>
+      <p class="release-note">arXiv version in preparation. Final model downloads are being packaged and verified.</p>
+    </section>
+
+    <section class="scope-band" aria-label="Method at a glance"><div class="wrap stat-grid">
+      <div><strong>5</strong><span>PDE settings</span></div>
+      <div><strong>3</strong><span>recovery directions</span></div>
+      <div><strong>5</strong><span>observation families</span></div>
+      <div><strong>1</strong><span>inference pass</span></div>
+    </div></section>
+
+    <section id="method" class="wrap section">
+      <div class="section-heading"><p class="eyebrow">01 / The idea</p><h2>Predict the whole.<br>Learn from what is visible.</h2></div>
+      <div class="section-copy"><p>Partial measurements do not uniquely determine every hidden feature. SCOPE predicts complete paired fields from the observed values and their masks, combining full-target latent prediction with physical reconstruction.</p><p>A shared decoder learns from both predicted context representations and complete-view encoder representations. At deployment, only the observation-conditioned pathway remains: <strong>no teacher, iterative sampling or test-time optimization.</strong></p></div>
+      <figure class="figure-card span-all">
+        <a href="assets/architecture.png" aria-label="Open full-resolution SCOPE architecture diagram"><img src="assets/architecture.png" alt="SCOPE's context encoder, mask conditioner, predictor and shared decoder; EMA target and full-view grounding are training-only branches." width="2200" height="1239" fetchpriority="high"></a>
+        <figcaption><span class="figure-index">METHOD</span> The training branches share a physical decoder; one context pathway is retained for inference. Field maps in this architecture diagram are schematic, not experimental predictions. Click to enlarge.</figcaption>
+      </figure>
+      <div class="task-grid span-all">
+        <article><span class="mini-label">FORWARD</span><h3>Observe <i>a</i>. Recover <i>u</i>.</h3><p>Input or coefficient observations condition the dense response.</p></article>
+        <article><span class="mini-label">INVERSE</span><h3>Observe <i>u</i>. Recover <i>a</i>.</h3><p>Response measurements condition the input or earlier state.</p></article>
+        <article><span class="mini-label">JOINT</span><h3>Observe both. Complete both.</h3><p>Separate channel masks describe the available measurements.</p></article>
+      </div>
+    </section>
+
+    <section class="adaptation-section"><div class="wrap">
+      <p class="eyebrow">02 / SCOPE-SP</p><div class="adaptation-heading"><h2>A frozen backbone.<br>A trainable readout.</h2><p>Decoder-only adaptation fits the representations encountered at deployment. The encoder, mask conditioner and predictor stay frozen; only a newly initialized decoder is trained.</p></div>
+      <div class="pipeline" aria-label="Sparse-path adaptation: observations pass through a frozen encoder, conditioner and predictor, followed by a trainable SP decoder and paired-field outputs.">
+        <div class="pipeline-node input"><span>INPUT</span><strong>Values + masks</strong><small>Sparse observation context</small></div><span class="arrow" aria-hidden="true">→</span>
+        <div class="pipeline-node frozen"><span>FROZEN</span><strong>Encoder + predictor</strong><small>Including mask conditioning</small></div><span class="arrow" aria-hidden="true">→</span>
+        <div class="pipeline-node trainable"><span>TRAINABLE</span><strong>SP decoder</strong><small>5M · 10M · 15M heads</small></div><span class="arrow" aria-hidden="true">→</span>
+        <div class="pipeline-node output"><span>OUTPUT</span><strong>Complete <i>a</i> and <i>u</i></strong><small>One deterministic pass</small></div>
+      </div>
+      <div class="adaptation-notes"><p><strong>SP is the deployment-path adaptation.</strong> It fits detached predictor latents from sparse training contexts, using physical field loss.</p><p><strong>DP is a separate diagnostic.</strong> It fits complete-view encoder latents and tests readout transfer to the sparse pathway. The two recipes are not interchangeable.</p></div>
+      <a class="text-link light" href="https://github.com/ru1ch3n/SCOPE/blob/main/docs/PROBES.md">Decoder protocols and commands ↗</a>
+    </div></section>
+
+    <section id="results" class="wrap section">
+      <div class="section-heading"><p class="eyebrow">03 / Experimental evidence</p><h2>Physical reconstruction.<br>Readout adaptation.</h2></div>
+      <div class="section-copy"><p>The experiments study sparse forward and inverse recovery, grounding within the predictive recipe, and decoder adaptation on frozen representations.</p><p>Native-to-SP changes both capacity and optimization. Matched-size DP-to-SP instead compares the latent pathway used for decoder fitting. These comparisons answer different questions.</p></div>
+      <figure class="figure-card span-all comparison">
+        <a href="assets/comparison.png" aria-label="Open full-resolution grounding and readout comparison figure"><img src="assets/comparison.png" alt="Forward and inverse error bars for Poisson, Helmholtz, Darcy and NS: auxiliary neural-operator pairs, field-only and FJV ablations, native SCOPE, and three SP decoder sizes." width="2200" height="1005" loading="lazy"></a>
+        <figcaption><span class="figure-index">GROUNDING &amp; READOUT</span> Existing manuscript figure, unchanged. Bars show mean error with per-record SD on logarithmic axes; forward evaluates <i>u</i>, inverse evaluates <i>a</i>, with BER for Darcy inverse. Auxiliary operators have separate training protocols and metric-unit conventions; compare added supervision within each family, not as a matched main-table ranking.</figcaption>
+      </figure>
+      <div class="evidence-notes span-all"><div><h3>Physical metrics</h3><p>Unsquared relative L₂ in physical units. Darcy inverse uses pixelwise BER, not continuous relative L₂.</p></div><div><h3>Explicit protocols</h3><p>Uniform-500 means 500 / 16,384 = 3.0518%. Cylinder conditioning and zero-target handling are documented separately.</p></div><div><h3>Transparent comparisons</h3><p>Per-record SD is not training-seed uncertainty. Literature-reported scores are not presented as matched reruns.</p></div></div>
+      <a class="text-link span-all" href="https://github.com/ru1ch3n/SCOPE/blob/main/docs/RESULTS.md">Read the comparison scope and limitations ↗</a>
+    </section>
+
+    <section class="benchmark-section"><div class="wrap">
+      <p class="eyebrow">04 / Problems &amp; observations</p><h2>One method. Five PDE settings.</h2>
+      <div class="pde-grid"><div><span>01</span><h3>Poisson</h3><p>Source → solution</p></div><div><span>02</span><h3>Helmholtz</h3><p>Input → response</p></div><div><span>03</span><h3>Darcy</h3><p>Permeability → solution</p></div><div><span>04</span><h3>Navier–Stokes</h3><p>Earlier → later vorticity</p></div><div><span>05</span><h3>NS · Cylinder</h3><p>Earlier → later speed</p></div></div>
+      <div class="observation-row"><span>TRAINING CONTEXTS</span><ul><li>Uniform points</li><li>Regular grid</li><li>Random lines</li><li>2–4-center clusters</li><li>Blocks</li></ul></div>
+      <p class="small-note">One task, observation family and nominal budget per batch. Actual point locations vary across samples. No-obstacle NS is not an infinite-domain problem. <a href="https://github.com/ru1ch3n/SCOPE/blob/main/docs/PROTOCOL.md">Exact sampling protocol ↗</a></p>
+    </div></section>
+
+    <section id="start" class="wrap section quickstart">
+      <div class="section-heading"><p class="eyebrow">05 / Reproduce</p><h2>From clone<br>to a complete workflow.</h2><p class="section-copy">Explicit commands for installation, backbone training, decoder adaptation and evaluation.</p><a class="text-link" href="https://github.com/ru1ch3n/SCOPE#quick-start">Full installation notes ↗</a></div>
+      <div class="terminal">
+        <div class="terminal-tabs" role="tablist" aria-label="Workflow commands"><button id="tab-install" role="tab" aria-selected="true" aria-controls="panel-install">01 Install</button><button id="tab-train" role="tab" aria-selected="false" aria-controls="panel-train" tabindex="-1">02 Train</button><button id="tab-test" role="tab" aria-selected="false" aria-controls="panel-test" tabindex="-1">03 Adapt &amp; test</button></div>
+        <div id="panel-install" role="tabpanel" aria-labelledby="tab-install"><pre><code>git clone https://github.com/ru1ch3n/SCOPE.git
+cd SCOPE
+python3 tools/setup.py --pde poisson</code></pre><p>Creates the environment, downloads the selected public dataset and verifies checksums. No author token needed.</p></div>
+        <div id="panel-train" role="tabpanel" aria-labelledby="tab-train" hidden><pre><code>.venv/bin/python -m scope.train --config configs/poisson.json</code></pre><p>10 complete-view pretraining epochs + 500 main epochs. Add <code>--resume</code> to continue a compatible training run.</p></div>
+        <div id="panel-test" role="tabpanel" aria-labelledby="tab-test" hidden><pre><code>.venv/bin/python -m scope.probe --base runs/poisson --size 10m --observation uniform500
+
+.venv/bin/python -m scope.evaluate --run runs/probes/10m-uniform500-full-poisson --protocol uniform3</code></pre><p>Fit the decoder for 100 epochs on the frozen backbone, then evaluate the resulting SP model. This is a training workflow, not a pretrained-weight download.</p></div>
+        <div class="terminal-footer"><span>Python 3.11 / 3.12 · NVIDIA GPU for full training</span><button id="copy-command" type="button">Copy commands</button><span id="copy-status" class="sr-only" role="status"></span></div>
+      </div>
+      <p class="small-note span-all">Windows: replace <code>.venv/bin/python</code> with <code>.venv\Scripts\python.exe</code>. A BF16-capable 48 GiB GPU is a practical reference class. A <a href="https://github.com/ru1ch3n/SCOPE#software-checks">CPU smoke-test workflow</a> is available without launching full training.</p>
+    </section>
+
+    <section id="resources" class="resources-section"><div class="wrap">
+      <p class="eyebrow">06 / Research resources</p><h2>Inspect. Reproduce. Build on.</h2>
+      <div class="resource-grid">
+        <a class="resource" href="https://github.com/ru1ch3n/SCOPE"><span class="resource-status ready">AVAILABLE</span><h3>Code &amp; recipes <span>↗</span></h3><p>The main model, observation protocols, training and evaluation entrypoints, ablations and decoder probes.</p><span class="resource-meta">Public GitHub · documented research-use terms</span></a>
+        <a class="resource" href="https://huggingface.co/datasets/jcy20/DiffusionPDE-normalized"><span class="resource-status ready">UPSTREAM DATA</span><h3>Paired physical fields <span>↗</span></h3><p>FunDPS-processed DiffusionPDE data. The installer pins the upstream revision and verifies downloaded files.</p><span class="resource-meta">Hugging Face · CC BY-NC-SA 4.0</span></a>
+        <a class="resource" href="https://github.com/ru1ch3n/SCOPE/blob/main/docs/MODELS.md"><span class="resource-status pending">RELEASE IN PREPARATION</span><h3>Final trained weights <span>↗</span></h3><p>Completed backbone, ablation, SP/DP and operator weights are being packaged with metadata and checksums. Historical snapshots and datasets are excluded.</p><span class="resource-meta">View model availability and loading status</span></a>
+      </div>
+      <div class="citation-block"><div><h3>Cite SCOPE</h3><p>Author and repository metadata are available in <a href="https://github.com/ru1ch3n/SCOPE/blob/main/CITATION.cff">CITATION.cff ↗</a>. The arXiv identifier and public paper download will be added when available.</p></div><p class="limits">This is a public research-code release, not a claim of conference acceptance. Code, datasets and weights have distinct terms. The anonymous review distribution remains separate.</p></div>
+    </div></section>
+  </main>
+  <footer class="wrap footer"><div><a class="wordmark" href="#">SCOPE<span>.</span></a><p>Observation-Conditioned Full-Target Prediction<br>for Sparse PDE Inference</p></div><div><a href="https://github.com/ru1ch3n/SCOPE">GitHub ↗</a><a href="https://github.com/ru1ch3n/SCOPE/blob/main/docs/PROTOCOL.md">Protocol ↗</a><a href="https://github.com/ru1ch3n/SCOPE/blob/main/LICENSE">Permissions ↗</a><p>Public research release · September 2026</p></div></footer>
+</body>
+</html>
