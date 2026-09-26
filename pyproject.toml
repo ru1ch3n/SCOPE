@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=75", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "scope-pde"
+version = "0.2.0"
+description = "SCOPE: observation-conditioned PDE field recovery (model, objective variants, decoder probes)"
+requires-python = ">=3.11,<3.13"
+dependencies = [
+  "torch==2.12.1", "numpy==2.2.6", "pyarrow==21.0.0",
+  "huggingface-hub==0.34.4", "filelock==3.19.1"
+]
+
+[project.optional-dependencies]
+test = ["pytest==8.4.2", "ruff==0.13.0"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+scope = ["assets/*.json", "assets/*.npy"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 110
+
+[tool.ruff.lint]
+select = ["E9", "F63", "F7", "F82"]
